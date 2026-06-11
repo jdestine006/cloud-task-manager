@@ -71,6 +71,32 @@ resource "aws_ecs_task_definition" "app" {
           awslogs-stream-prefix = "ecs"
         }
       }
+
+      secrets = [
+        {
+          name      = "DB_USERNAME"
+          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:username::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:password::"
+        }
+      ]
+
+      environment = [
+        {
+          name  = "DB_HOST"
+          value = aws_db_instance.postgres.address
+        },
+        {
+          name  = "DB_PORT"
+          value = tostring(aws_db_instance.postgres.port)
+        },
+        {
+          name  = "DB_NAME"
+          value = aws_db_instance.postgres.db_name
+        }
+      ]
     }
   ])
 }
@@ -109,4 +135,26 @@ resource "aws_ecs_service" "app" {
   depends_on = [
     aws_lb_listener.http
   ]
+}
+
+resource "aws_iam_policy" "ecs_secrets_access" {
+  name = "cloud-task-manager-ecs-secrets-access"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_secretsmanager_secret.db_credentials.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_secrets_access_attach" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_secrets_access.arn
 }
