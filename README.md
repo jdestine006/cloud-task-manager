@@ -22,6 +22,13 @@ This project demonstrates how a simple business application can be architected u
 * Operational visibility
 
 ---
+``` markdown
+## Architecture Diagram
+
+See full architecture diagram here: 
+
+[Cloud Task Manager Architecture](docs/architecture.md)
+
 
 ## Solution Architecture
 
