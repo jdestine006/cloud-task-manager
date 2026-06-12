@@ -152,6 +152,71 @@ The platform includes:
 Amazon SNS email notifications are triggered when infrastructure thresholds are exceeded.
 
 ---
+## Load Testing and Auto Scaling Validation
+
+### Objective
+
+Validate that the ECS Fargate service could automatically scale in response to increased application load while maintaining application availability.
+
+### Test Methodology
+
+Load testing was performed using k6 against the production deployment hosted behind the Application Load Balancer.
+
+Test traffic generated repeated requests to the task management API endpoints, including task retrieval and task creation operations.
+
+### Scaling Configuration
+
+The ECS service was configured using AWS Application Auto Scaling with the following parameters:
+
+| Setting                | Value       |
+| ---------------------- | ----------- |
+| Minimum Tasks          | 1           |
+| Maximum Tasks          | 3           |
+| Target CPU Utilization | 70%         |
+| Scale Out Cooldown     | 60 seconds  |
+| Scale In Cooldown      | 300 seconds |
+
+### Monitoring and Alerting
+
+The platform was monitored using Amazon CloudWatch dashboards and alarms.
+
+Observed metrics included:
+
+* ECS CPU Utilization
+* ECS Memory Utilization
+* ALB Request Count
+* ALB Target Response Time
+* RDS Database Connections
+
+Amazon SNS email notifications were configured to alert when CPU utilization exceeded the configured threshold.
+
+### Results
+
+During load testing:
+
+1. Application traffic increased CPU utilization beyond the configured threshold.
+2. CloudWatch alarms entered the ALARM state.
+3. SNS notifications were delivered successfully via email.
+4. ECS Auto Scaling increased the desired task count automatically.
+5. Additional Fargate tasks were launched successfully.
+6. Application availability was maintained throughout the test.
+
+### Validation Outcome
+
+The test successfully validated:
+
+* CloudWatch metric collection
+* CloudWatch alarm configuration
+* SNS notification delivery
+* ECS target-tracking auto scaling
+* Container deployment health
+* Application resiliency under increased load
+
+### Operational Lessons Learned
+
+This exercise demonstrated how AWS managed services can work together to provide a self-healing and scalable application platform.
+
+The validation process also highlighted the importance of monitoring, alerting, and automated scaling policies when designing production-ready cloud architectures.
 
 ## Challenges and Troubleshooting
 
@@ -212,7 +277,6 @@ The completed solution successfully demonstrates:
 Potential future improvements include:
 
 * HTTPS with AWS Certificate Manager
-* Auto Scaling Policies
 * Blue/Green Deployments
 * OpenTelemetry Integration
 * Prometheus and Grafana Monitoring
@@ -241,3 +305,14 @@ Potential future improvements include:
 * GitHub Actions
 * IAM
 * VPC Networking
+
+## Project Highlights
+* Designed and deployed a cloud-native application on AWS using ECS Fargate, RDS PostgreSQL, and Application Load Balancer.
+* Implemented Infrastructure as Code using Terraform.
+* Secured database credentials using AWS Secrets Manager.
+* Built CI/CD automation using GitHub Actions and Amazon ECR.
+* Implemented monitoring, alerting, and observability using CloudWatch and SNS.
+* Designed ECS target-tracking auto scaling policies and validated scale-out behavior through load testing.
+* Diagnosed and resolved real-world networking, deployment, authentication, and database connectivity issues.
+* Created a production-style architecture using private subnets, NAT Gateway routing, and least-exposure networking principles.
+
