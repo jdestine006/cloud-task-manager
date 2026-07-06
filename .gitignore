@@ -1,9 +1,23 @@
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
+crash.log
+override.tf
+override.tf.json
 terraform.tfvars
-*.zip
+
+# macOS
+.DS_Store
+
+# Python
 __pycache__/
 *.pyc
-node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets
+*.pem
 .env

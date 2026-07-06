@@ -8,10 +8,7 @@ resource "aws_lb" "app" {
     aws_security_group.alb_sg.id
   ]
 
-  subnets = [
-    aws_subnet.public_a.id,
-    aws_subnet.public_b.id
-  ]
+  subnets = module.networking.public_subnet_ids
 }
 
 # Target Group 
@@ -19,7 +16,7 @@ resource "aws_lb_target_group" "app" {
   name        = "cloud-task-manager-tg"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.networking.vpc_id
   target_type = "ip"
 
   health_check {

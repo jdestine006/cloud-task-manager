@@ -7,7 +7,7 @@ resource "aws_sns_topic" "alerts" {
 resource "aws_sns_topic_subscription" "email_alerts" {
   topic_arn = aws_sns_topic.alerts.arn
   protocol  = "email"
-  endpoint  = "jcdestine@gmail.com"
+  endpoint  = var.alert_email
 }
 
 # ECS CPU Alarm
@@ -24,8 +24,8 @@ resource "aws_cloudwatch_metric_alarm" "ecs_high_cpu" {
   alarm_actions       = [aws_sns_topic.alerts.arn]
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.main.name
-    ServiceName = aws_ecs_service.app.name
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 }
 
@@ -43,8 +43,8 @@ resource "aws_cloudwatch_metric_alarm" "ecs_high_memory" {
   alarm_actions       = [aws_sns_topic.alerts.arn]
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.main.name
-    ServiceName = aws_ecs_service.app.name
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 }
 
@@ -62,7 +62,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_high_cpu" {
   alarm_actions       = [aws_sns_topic.alerts.arn]
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.postgres.id
+    DBInstanceIdentifier = var.db_identifier
   }
 }
 
@@ -80,6 +80,6 @@ resource "aws_cloudwatch_metric_alarm" "rds_low_storage" {
   alarm_actions       = [aws_sns_topic.alerts.arn]
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.postgres.id
+    DBInstanceIdentifier = var.db_identifier
   }
 }

@@ -1,5 +1,7 @@
 variable "project_name" {
-  default = "cloud-task-manager"
+  description = "Project Name"
+  default     = "cloud-task-manager"
+  type        = string
 }
 
 variable "aws_region" {
@@ -16,4 +18,9 @@ variable "db_password" {
   description = "PostgreSQL admin password"
   type        = string
   sensitive   = true
+}
+
+variable "alert_email" {
+  description = "Email address to receive CloudWatch alarm notifications"
+  type        = string
 }

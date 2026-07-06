@@ -52,3 +52,4 @@ resource "aws_subnet" "private_b" {
     Name = "private-b"
   }
 }
+

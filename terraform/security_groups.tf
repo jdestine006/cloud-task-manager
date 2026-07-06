@@ -2,7 +2,7 @@
 resource "aws_security_group" "alb_sg" {
   name        = "cloud-task-manager-alb-sg"
   description = "Allow web traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.networking.vpc_id
 
   ingress {
     from_port   = 80
@@ -22,7 +22,7 @@ resource "aws_security_group" "alb_sg" {
 # ECS Security Group 
 resource "aws_security_group" "ecs_sg" {
   name   = "cloud-task-manager-ecs-sg"
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.networking.vpc_id
 
   ingress {
     from_port       = 8000
@@ -42,7 +42,7 @@ resource "aws_security_group" "ecs_sg" {
 # RDS Security Group -- only allows PostgreSQL traffic from ECS Security Group
 resource "aws_security_group" "rds" {
   name   = "rds-sg"
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.networking.vpc_id
 
   ingress {
     from_port       = 5432
@@ -63,7 +63,7 @@ resource "aws_security_group" "rds" {
 resource "aws_security_group" "rds_sg" {
   name        = "cloud-task-manager-rds-sg"
   description = "Allow PostgreSQL access from ECS tasks"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.networking.vpc_id
 
   ingress {
     description     = "PostgreSQL from ECS tasks"

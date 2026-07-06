@@ -7,11 +7,11 @@ output "alb_dns_name" {
 }
 
 output "rds_endpoint" {
-  value       = aws_db_instance.postgres.address
-  description = "RDS PostgreSQL endpoint"
+  description = "RDS endpoint"
+  value       = module.database.address
 }
 
 output "rds_port" {
-  value       = aws_db_instance.postgres.port
-  description = "RDS PostgreSQL port"
+  description = "RDS port"
+  value       = module.database.port
 }
